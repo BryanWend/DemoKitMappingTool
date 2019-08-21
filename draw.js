@@ -7,9 +7,11 @@ var grid = 25;
 var lineCounter = 0;
 var shapeLocationArray = [];
 
+
+
 window.onload = function drawPage(){
 
-	shapeLocationArray.length = 0;
+	// shapeLocationArray.length = 0;
 	upperLayCanvas = new fabric.Canvas('upperCanvas', { selection: false });
 	lowerHoleCanvas = new fabric.Canvas('lowerCanvas', { selection: false });
 
@@ -19,86 +21,48 @@ window.onload = function drawPage(){
 
 	//Draw all the required Objects in a default position
 	drawObjects(upperLayCanvas);
-	if(localStorage.length === 1)
-		loadFromStorage(upperLayCanvas);
+	if(localStorage.length > 0)
+		loadFromStorage();
 
 	//Draw grey inclusive border
 	drawBorder(upperLayCanvas);
 	drawBorder(lowerHoleCanvas);
 
-	upperLayCanvas.on('object:moving', function(options){
-		//Prevent from leaving the canvas area
-		if (options.target.left <= 0) {
-			options.target.left = 0;
-		}
-		if (options.target.top <= 0) {
-			options.target.top = 0;
-		}
-		if (options.target.left >= (upperLayCanvas.width - options.target.width)) {
-			options.target.left = upperLayCanvas.width - options.target.width;
-		}
-		if (options.target.top >= (upperLayCanvas.height - options.target.height)) {
-			options.target.top = upperLayCanvas.height - options.target.height;
-		}
-		//Snap to the grid when moving
-		options.target.set({
-		   left: Math.round(options.target.left / grid) * grid,
-		   top: Math.round(options.target.top / grid) * grid
-		});
-	});
+	upperLayCanvas.on({'object:moving': setBoundary});
 
 	lowerHoleCanvas.on('mouse:up', function(options){
-   		console.log(options.e.layerX, options.e.layerY);
 
-   		if(options.target == null){
-	   		lowerHoleCanvas.add(new fabric.Rect({
-			  width: grid, 
-			  height: grid, 
-			  left: options.e.layerX - grid / 2, 
-			  top: options.e.layerY - grid / 2, 
-			  fill: '#faa', 
-			  // hasControls: false
-	   		}))
-   		}
-
-  //  		options.target.set({
-		//    left: Math.round(options.target.left / grid) * grid,
-		//    top: Math.round(options.target.top / grid) * grid
-		// });
+   		if(options.target == null)
+   			drawRect(options.e.layerY - grid / 2, options.e.layerX - grid / 2);
+   		
 	});
 
-	// lowerHoleCanvas.on('object:moving', function(options){
-
-	// 	//Snap to the grid when moving
-	// 	options.target.set({
-	// 	   left: Math.round(options.target.left / grid) * grid,
-	// 	   top: Math.round(options.target.top / grid) * grid
-	// 	});
-	// });
+	lowerHoleCanvas.on('object:moving', setBoundary);
 
 }
 
 
-function loadFromStorage(canvas){
+function loadFromStorage(){
 	//Convert stored string back to JS objects
-	shapeLocationArray.length = 0;
-	shapeLocationArray = JSON.parse(localStorage.getItem('coords'));
+	// shapeLocationArray.length = 0;
+	var loadLocation;
+	loadLocation = JSON.parse(localStorage.getItem('topCoords'));
 	//Loop through canvas objects from end to start since main 
 	//shapes are drawn last
-	for (var i = canvas._objects.length - 1; i > 0; i--) {
+	for (var i = upperLayCanvas._objects.length - 1; i > 0; i--) {
 		//Check if object type == group, otherwise break out
-		if (canvas._objects[i].type === "group") {
+		if (upperLayCanvas._objects[i].type === "group") {
 			//Check if it matches a saved object
-			for (var j = 0; j < shapeLocationArray.length; j++) {
-				if(canvas._objects[i]._objects[1].text === shapeLocationArray[j].name){
+			for (var j = 0; j < loadLocation.length; j++) {
+				if(upperLayCanvas._objects[i]._objects[1].text === loadLocation[j].name){
 					//Set the new shape location
-					canvas._objects[i].set({
-						left: shapeLocationArray[j].left,
-						top: shapeLocationArray[j].top
+					upperLayCanvas._objects[i].set({
+						left: loadLocation[j].left,
+						top: loadLocation[j].top
 					});
-					canvas._objects[i].setCoords();
+					upperLayCanvas._objects[i].setCoords();
 					//Remove from array when found to lower iterations
-					shapeLocationArray.splice(j,1);
+					loadLocation.splice(j,1);
 				}
 			}
 		}
@@ -106,20 +70,26 @@ function loadFromStorage(canvas){
 		else
 			break;
 	}
+	loadLocation = JSON.parse(localStorage.getItem('botCoords'));
+		for (var coord in loadLocation){
+			drawRect(loadLocation[coord].top, loadLocation[coord].left);
+		}
 	//Render a new canvas to show the changed positions
-	canvas.renderAll();
+	upperLayCanvas.renderAll();
+	lowerHoleCanvas.renderAll();
 }
 
 //This will eventually need to be changed to support both canvases
 function save(){
 	//Loop through canvas objects from end to start since main 
 	//shapes are drawn last
-	shapeLocationArray.length = 0;
+	var savedLocation = [];
+	// shapeLocationArray.length = 0;
 	for (var i = upperLayCanvas._objects.length - 1; i > 0; i--) {
 		//Check it is a shape and not part of the gridlines
 		if(upperLayCanvas._objects[i].type === "group"){
 			//Add info as object to an array
-			shapeLocationArray.push({
+			savedLocation.push({
 				name: upperLayCanvas._objects[i]._objects[1].text,
 				top: upperLayCanvas._objects[i].top,
 				left: upperLayCanvas._objects[i].left
@@ -127,9 +97,22 @@ function save(){
 		}
 		else
 			break;
-		//Convert array to string and store it for next load
-		localStorage.setItem("coords", JSON.stringify(shapeLocationArray));
 	}
+	//Convert array to string and store it for next load
+	localStorage.setItem("topCoords", JSON.stringify(savedLocation));
+	savedLocation = [];
+	for (var i = lowerHoleCanvas._objects.length - 1; i > 0; i--){
+		if(lowerHoleCanvas._objects[i].type === "rect"){
+
+			savedLocation.push({
+				top: lowerHoleCanvas._objects[i].top,
+				left: lowerHoleCanvas._objects[i].left
+			});
+		}
+		else
+			break;
+		}
+	localStorage.setItem("botCoords", JSON.stringify(savedLocation));
 }
 
 function drawGrid(canvas, width, height){
@@ -157,7 +140,7 @@ function drawObjects(canvas){
 	  fill: '#faa', 
 	  originX: 'left', 
 	  originY: 'top',
-	  centeredRotation: true
+	  centeredRotation: true,
 	});
 
 	var kvmText = new fabric.Text("KVM Switch",{
@@ -167,7 +150,9 @@ function drawObjects(canvas){
 		originY: 'top',
 	});
 
-	var kvmGroup = new fabric.Group([kvmObj, kvmText]);
+	var kvmGroup = new fabric.Group([kvmObj, kvmText],{
+		hasControls: false
+	});
 	canvas.add(kvmGroup);
 
 	//Make the NUC shapes
@@ -189,7 +174,9 @@ function drawObjects(canvas){
 		originY: 'top',
 	});
 
-	var nuc1Group = new fabric.Group([nuc1Obj, nuc1Text]);
+	var nuc1Group = new fabric.Group([nuc1Obj, nuc1Text],{
+		hasControls: false
+	});
 	canvas.add(nuc1Group);
 
 	var nuc2Obj = new fabric.Rect({ 
@@ -210,7 +197,9 @@ function drawObjects(canvas){
 		originY: 'top',
 	});
 
-	var nuc2Group = new fabric.Group([nuc2Obj, nuc2Text]);
+	var nuc2Group = new fabric.Group([nuc2Obj, nuc2Text],{
+		hasControls: false
+	});
 	canvas.add(nuc2Group);
 
 	//Make the keyboard shapes
@@ -232,7 +221,9 @@ function drawObjects(canvas){
 		originY: 'top',
 	});
 
-	var keyboardGroup = new fabric.Group([keyboardObj, keyboardText]);
+	var keyboardGroup = new fabric.Group([keyboardObj, keyboardText],{
+		hasControls: false
+	});
 	canvas.add(keyboardGroup);
 
 	//Make the monitor shapes
@@ -254,7 +245,9 @@ function drawObjects(canvas){
 		originY: 'top',
 	});
 
-	var screenGroup = new fabric.Group([screenObj, screenText]);
+	var screenGroup = new fabric.Group([screenObj, screenText],{
+		hasControls: false
+	});
 	canvas.add(screenGroup);
 }
 
@@ -320,4 +313,36 @@ function drawBorder(canvas){
 	//Prevent blocking movement of other shapes
 	canvas.sendToBack(borderGroup);
 
+}
+
+function drawRect(top, left){
+	lowerHoleCanvas.add(new fabric.Rect({
+		width: grid, 
+		height: grid, 
+		left: left, 
+		top: top, 
+		fill: '#faa', 
+		hasControls: false
+	}))	
+}
+
+function setBoundary(options){
+	//Prevent from leaving the canvas area
+	if (options.target.left <= 0) {
+		options.target.left = 0;
+	}
+	if (options.target.top <= 0) {
+		options.target.top = 0;
+	}
+	if (options.target.left >= (upperLayCanvas.width - options.target.width)) {
+		options.target.left = upperLayCanvas.width - options.target.width;
+	}
+	if (options.target.top >= (upperLayCanvas.height - options.target.height)) {
+		options.target.top = upperLayCanvas.height - options.target.height;
+	}
+	//Snap to the grid when moving
+	options.target.set({
+	   left: Math.round(options.target.left / grid) * grid,
+	   top: Math.round(options.target.top / grid) * grid
+	});
 }
