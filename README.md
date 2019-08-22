@@ -4,6 +4,9 @@
 
 Create an easy tool that maps out the insides of a Pelican 1510 case for consistent recreation of physical units.
 
+While this use case is highly specific, the code base could be updated to cover a variety of situations.
+For Example: Space planning of furniture within a house or apartment
+
 ### Additional Notes
 
 Sizes must be hard-coded to ensure it meets exact measurements for physical accuracy.
