@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create an easy tool that maps out the insides of a Pelican 1510 case for consistent recreation of physical demonstration units
+Create an easy tool that maps out the insides of a Pelican 1510 case for consistent recreation of physical units.
 
 ### Additional Notes
 
@@ -10,14 +10,16 @@ Sizes must be hard-coded to ensure it meets exact measurements for physical accu
 
 ## Current Progress
 
-There is two total canvases with Canvas One being completed.
+There is two total canvases.
 
  - Canvas One, the top canvas, is used to map component locations with the case.
  - Canvas Two, the bottom canvas, is used to map out the specific grid squares that are required to be cut out of the case.
 
 ## To Do
 
-- [ ] The bottom canvas is able to create shapes on click but cannot immediately place them into the grid layout.  They have to be moved into a space in order to snap to grid.
-- [ ] Shape object declaration for multiple canvases can be simplified through use of array and a for loop with constructor because values must be hardcoded intially.
-- [ ] Additional CSS Styling
+- [ ] The bottom canvas is able to create shapes on click but cannot immediately place them into the grid layout.  They must be moved into in order to snap to grid
+- [x] Shape object declaration for multiple canvases can be simplified
+- [x] Enable saving of bottom canvas, not just top
+- [x] Additional CSS Styling
+- [x] Cleaning of HTML and CSS
 - [ ] \(Optional) Include a third canvas to map out bottom layer of internals.  Canvas One only includes the top layer of required components
