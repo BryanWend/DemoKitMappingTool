@@ -1,17 +1,13 @@
 
 'use strict'
 
-var upperLayCanvas;
-var lowerHoleCanvas;
-var grid = 25;
-var lineCounter = 0;
-var shapeLocationArray = [];
-
-
+let upperLayCanvas;
+let lowerHoleCanvas;
+let grid = 25;
+let lineCounter = 0;
 
 window.onload = function drawPage(){
 
-	// shapeLocationArray.length = 0;
 	upperLayCanvas = new fabric.Canvas('upperCanvas', { selection: false });
 	lowerHoleCanvas = new fabric.Canvas('lowerCanvas', { selection: false });
 
@@ -28,32 +24,28 @@ window.onload = function drawPage(){
 	drawBorder(upperLayCanvas);
 	drawBorder(lowerHoleCanvas);
 
+	//Wire events
 	upperLayCanvas.on({'object:moving': setBoundary});
 
 	lowerHoleCanvas.on('mouse:up', function(options){
-
    		if(options.target == null)
-   			drawRect(options.e.layerY - grid / 2, options.e.layerX - grid / 2);
-   		
+   			drawRect(options.e.layerY - grid / 2, options.e.layerX - grid / 2);		
 	});
 
 	lowerHoleCanvas.on('object:moving', setBoundary);
-
 }
-
 
 function loadFromStorage(){
 	//Convert stored string back to JS objects
-	// shapeLocationArray.length = 0;
-	var loadLocation;
+	let loadLocation;
 	loadLocation = JSON.parse(localStorage.getItem('topCoords'));
 	//Loop through canvas objects from end to start since main 
 	//shapes are drawn last
-	for (var i = upperLayCanvas._objects.length - 1; i > 0; i--) {
+	for (let i = upperLayCanvas._objects.length - 1; i > 0; i--) {
 		//Check if object type == group, otherwise break out
 		if (upperLayCanvas._objects[i].type === "group") {
 			//Check if it matches a saved object
-			for (var j = 0; j < loadLocation.length; j++) {
+			for (let j = 0; j < loadLocation.length; j++) {
 				if(upperLayCanvas._objects[i]._objects[1].text === loadLocation[j].name){
 					//Set the new shape location
 					upperLayCanvas._objects[i].set({
@@ -71,7 +63,7 @@ function loadFromStorage(){
 			break;
 	}
 	loadLocation = JSON.parse(localStorage.getItem('botCoords'));
-		for (var coord in loadLocation){
+		for (let coord in loadLocation){
 			drawRect(loadLocation[coord].top, loadLocation[coord].left);
 		}
 	//Render a new canvas to show the changed positions
@@ -83,9 +75,8 @@ function loadFromStorage(){
 function save(){
 	//Loop through canvas objects from end to start since main 
 	//shapes are drawn last
-	var savedLocation = [];
-	// shapeLocationArray.length = 0;
-	for (var i = upperLayCanvas._objects.length - 1; i > 0; i--) {
+	let savedLocation = [];
+	for (let i = upperLayCanvas._objects.length - 1; i > 0; i--) {
 		//Check it is a shape and not part of the gridlines
 		if(upperLayCanvas._objects[i].type === "group"){
 			//Add info as object to an array
@@ -101,7 +92,7 @@ function save(){
 	//Convert array to string and store it for next load
 	localStorage.setItem("topCoords", JSON.stringify(savedLocation));
 	savedLocation = [];
-	for (var i = lowerHoleCanvas._objects.length - 1; i > 0; i--){
+	for (let i = lowerHoleCanvas._objects.length - 1; i > 0; i--){
 		if(lowerHoleCanvas._objects[i].type === "rect"){
 
 			savedLocation.push({
@@ -132,7 +123,7 @@ function drawGrid(canvas, width, height){
 //Add Shape Objects
 function drawObjects(canvas){
 	//Make KVM shapes
-	var kvmObj = new fabric.Rect({ 
+	let kvmObj = new fabric.Rect({ 
 	  left: 600, 
 	  top: 50, 
 	  width: 325, 
@@ -143,20 +134,20 @@ function drawObjects(canvas){
 	  centeredRotation: true,
 	});
 
-	var kvmText = new fabric.Text("KVM Switch",{
+	let kvmText = new fabric.Text("KVM Switch",{
 		left: 650, 
 		top: 62.5, 
 		originX: 'left', 
 		originY: 'top',
 	});
 
-	var kvmGroup = new fabric.Group([kvmObj, kvmText],{
+	let kvmGroup = new fabric.Group([kvmObj, kvmText],{
 		hasControls: false
 	});
 	canvas.add(kvmGroup);
 
 	//Make the NUC shapes
-	var nuc1Obj = new fabric.Rect({ 
+	let nuc1Obj = new fabric.Rect({ 
 	  left: 600, 
 	  top: 175, 
 	  width: 225,
@@ -167,19 +158,19 @@ function drawObjects(canvas){
 	  centeredRotation: true
 	});
 
-	var nuc1Text = new fabric.Text("NUC 1",{
+	let nuc1Text = new fabric.Text("NUC 1",{
 		left: 660, 
 		top: 200, 
 		originX: 'left', 
 		originY: 'top',
 	});
 
-	var nuc1Group = new fabric.Group([nuc1Obj, nuc1Text],{
+	let nuc1Group = new fabric.Group([nuc1Obj, nuc1Text],{
 		hasControls: false
 	});
 	canvas.add(nuc1Group);
 
-	var nuc2Obj = new fabric.Rect({ 
+	let nuc2Obj = new fabric.Rect({ 
 	  left: 600, 
 	  top: 300, 
 	  width: 225,
@@ -190,20 +181,20 @@ function drawObjects(canvas){
 	  centeredRotation: true
 	});
 
-	var nuc2Text = new fabric.Text("NUC 2",{
+	let nuc2Text = new fabric.Text("NUC 2",{
 		left: 660, 
 		top: 325, 
 		originX: 'left', 
 		originY: 'top',
 	});
 
-	var nuc2Group = new fabric.Group([nuc2Obj, nuc2Text],{
+	let nuc2Group = new fabric.Group([nuc2Obj, nuc2Text],{
 		hasControls: false
 	});
 	canvas.add(nuc2Group);
 
 	//Make the keyboard shapes
-	var keyboardObj = new fabric.Rect({ 
+	let keyboardObj = new fabric.Rect({ 
 	  left: 300, 
 	  top: 400, 
 	  width: 875,
@@ -214,20 +205,20 @@ function drawObjects(canvas){
 	  centeredRotation: true
 	});
 
-	var keyboardText = new fabric.Text("Keyboard",{
+	let keyboardText = new fabric.Text("Keyboard",{
 		left: 660, 
 		top: 405, 
 		originX: 'left', 
 		originY: 'top',
 	});
 
-	var keyboardGroup = new fabric.Group([keyboardObj, keyboardText],{
+	let keyboardGroup = new fabric.Group([keyboardObj, keyboardText],{
 		hasControls: false
 	});
 	canvas.add(keyboardGroup);
 
 	//Make the monitor shapes
-	var screenObj = new fabric.Rect({ 
+	let screenObj = new fabric.Rect({ 
 	  left: 25, 
 	  top: 25, 
 	  width: 625,
@@ -238,14 +229,14 @@ function drawObjects(canvas){
 	  centeredRotation: true
 	});
 
-	var screenText = new fabric.Text("Monitor",{
+	let screenText = new fabric.Text("Monitor",{
 		left: 250, 
 		top: 200, 
 		originX: 'left', 
 		originY: 'top',
 	});
 
-	var screenGroup = new fabric.Group([screenObj, screenText],{
+	let screenGroup = new fabric.Group([screenObj, screenText],{
 		hasControls: false
 	});
 	canvas.add(screenGroup);
@@ -254,7 +245,7 @@ function drawObjects(canvas){
 //Create a non-selectable border that you can drag/snap object over
 function drawBorder(canvas){
 
-	var pelTopBorderObj = new fabric.Rect({
+	let pelTopBorderObj = new fabric.Rect({
 	  left: 0, 
 	  top: 0, 
 	  width: 1000,
@@ -266,7 +257,7 @@ function drawBorder(canvas){
 	  selectable: false
 	});
 
-	var pelBotBorderObj = new fabric.Rect({
+	let pelBotBorderObj = new fabric.Rect({
 	  left: 0, 
 	  top: 525, 
 	  width: 1000,
@@ -278,7 +269,7 @@ function drawBorder(canvas){
 	  selectable: false
 	});
 
-	var pelLeftBorderObj = new fabric.Rect({
+	let pelLeftBorderObj = new fabric.Rect({
 	  left: 0, 
 	  top: 0, 
 	  width: 25,
@@ -290,7 +281,7 @@ function drawBorder(canvas){
 	  selectable: false
 	});
 
-	var pelRightBorderObj = new fabric.Rect({
+	let pelRightBorderObj = new fabric.Rect({
 	  left: 975, 
 	  top: 0, 
 	  width: 25,
@@ -302,7 +293,7 @@ function drawBorder(canvas){
 	  selectable: false
 	});
 
-	var borderGroup = new fabric.Group([pelTopBorderObj, 
+	let borderGroup = new fabric.Group([pelTopBorderObj, 
 		pelBotBorderObj, pelLeftBorderObj, pelRightBorderObj]);
 	canvas.add(borderGroup);
 	borderGroup.selectable = false;

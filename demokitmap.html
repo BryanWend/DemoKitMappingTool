@@ -8,198 +8,29 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<h1>Pelican 1510 Case Inside</h1>
+	<header></header>
+	<h1 id="title">Pelican 1510 Case Inside</h1>
 	<button id="saveChangesBtn" type="button" onclick="save()">Save Changes</button>
-	<div id="upperCanvasWrapper">
-		<canvas id="upperCanvas" width="1000" height="550"></canvas>
+	<div class="sectionWrapper">
+		<div id="upperCanvasWrapper">
+			<canvas id="upperCanvas" width="1000" height="550"></canvas>
+		</div>
+		<div class="content">
+			<h1>Hardware Placement</h1>
+			<p>The amount of available space within the case is small. On the left, you can map and visualize where certain components could possibly go. <br><br> The grid only displays the upper level of the case and excludes additional bottom level components such as a router or additional cabling.</p>
+		</div>
 	</div>
-
-	<div id="lowerCanvasWrapper">
-		<canvas id="lowerCanvas" width="1000" height="550"></canvas>
+	<hr>
+	<div class="sectionWrapper">
+		<div id="lowerCanvasWrapper">
+			<canvas id="lowerCanvas" width="1000" height="550"></canvas>
+		</div>
+			<div class="content">
+			<h1>Hole Punchout Layout</h1>
+			<p>Clicking on the grid places a small square to map the grid.<br><br>Each foam layer within the case is made of small, square punch-out holes. Because supply is limited, there is minimal room for testing or error. <br><br> By pre-planning and utilizing the grid to the left as a mapping, precise punches can be made. Each hole's measurements are identical excluding the middle row. The middle rectangles account for roughly ~2 standard square punch-outs.</p>
+		</div>
 	</div>
-
-	<script type="text/javascript">
-		// var upperLayCanvas = new fabric.Canvas('upperCanvas', { selection: false });
-		// var lowerHoleCanvas = new fabric.Canvas('lowerCanvas', { selection: false });
-		//var grid = 25;
-		//var lineCounter;
-		//debugger
-		//drawGrid(upperLayCanvas, upperLayCanvas.width, upperLayCanvas.height);
-		//drawObjects();
-
-		//Create Grid
-		// for (lineCounter = 0; lineCounter < (upperLayCanvas.width / grid); lineCounter++) {
-
-		//   //columns	
-		//   if(lineCounter != 19)
-		//   upperLayCanvas.add(new fabric.Line([ lineCounter * grid, 0, lineCounter * grid, upperLayCanvas.height], { stroke: '#ccc', selectable: false }));
-		//   //rows
-		//   if(lineCounter != 10)
-		//   upperLayCanvas.add(new fabric.Line([ 0, lineCounter * grid, upperLayCanvas.width, lineCounter * grid], { stroke: '#ccc', selectable: false }))
-		// }
-
-		// //Add Shape Objects
-		// var kvmObj = new fabric.Rect({ 
-		// 	  left: 600, 
-		// 	  top: 50, 
-		// 	  width: 325, 
-		// 	  height: 75, 
-		// 	  fill: '#faa', 
-		// 	  originX: 'left', 
-		// 	  originY: 'top',
-		// 	  centeredRotation: true
-		// 	});
-
-		// var kvmText = new fabric.Text("KVM Switch",{
-		// 	left: 650, 
-		// 	top: 62.5, 
-		// 	originX: 'left', 
-		// 	originY: 'top',
-		// });
-
-		// var kvmGroup = new fabric.Group([kvmObj, kvmText]);
-		// upperLayCanvas.add(kvmGroup);
-
-		// var nuc1Obj = new fabric.Rect({ 
-		// 	  left: 600, 
-		// 	  top: 175, 
-		// 	  width: 225,
-		// 	  height: 100,
-		// 	  fill: '#9f9', 
-		// 	  originX: 'left', 
-		// 	  originY: 'top',
-		// 	  centeredRotation: true
-		// });
-
-		// var nuc1Text = new fabric.Text("NUC 1",{
-		// 	left: 660, 
-		// 	top: 200, 
-		// 	originX: 'left', 
-		// 	originY: 'top',
-		// });
-
-		// var nuc1Group = new fabric.Group([nuc1Obj, nuc1Text]);
-		// upperLayCanvas.add(nuc1Group);
-
-		// var nuc2Obj = new fabric.Rect({ 
-		// 	  left: 600, 
-		// 	  top: 300, 
-		// 	  width: 225,
-		// 	  height: 100,
-		// 	  fill: '#9f9', 
-		// 	  originX: 'left', 
-		// 	  originY: 'top',
-		// 	  centeredRotation: true
-		// });
-
-		// var nuc2Text = new fabric.Text("NUC 2",{
-		// 	left: 660, 
-		// 	top: 325, 
-		// 	originX: 'left', 
-		// 	originY: 'top',
-		// });
-
-		// var nuc2Group = new fabric.Group([nuc2Obj, nuc2Text]);
-		// upperLayCanvas.add(nuc2Group);
-
-		// var keyboardObj = new fabric.Rect({ 
-		// 	  left: 300, 
-		// 	  top: 400, 
-		// 	  width: 875,
-		// 	  height: 50,
-		// 	  fill: '#96daff', 
-		// 	  originX: 'left', 
-		// 	  originY: 'top',
-		// 	  centeredRotation: true
-		// });
-
-		// var keyboardText = new fabric.Text("Keyboard",{
-		// 	left: 660, 
-		// 	top: 405, 
-		// 	originX: 'left', 
-		// 	originY: 'top',
-		// });
-
-		// var keyboardGroup = new fabric.Group([keyboardObj, keyboardText]);
-		// upperLayCanvas.add(keyboardGroup);
-
-		// var screenObj = new fabric.Rect({ 
-		//   left: 25, 
-		//   top: 25, 
-		//   width: 625,
-		//   height: 425,
-		//   fill: '#ffee8e', 
-		//   originX: 'left', 
-		//   originY: 'top',
-		//   centeredRotation: true
-		// });
-
-		// var screenText = new fabric.Text("Monitor",{
-		// 	left: 250, 
-		// 	top: 200, 
-		// 	originX: 'left', 
-		// 	originY: 'top',
-		// });
-
-		// var screenGroup = new fabric.Group([screenObj, screenText]);
-		// upperLayCanvas.add(screenGroup);
-
-		// var pelTopBorderObj = upperLayCanvas.add(new fabric.Rect({
-		//   left: 0, 
-		//   top: 0, 
-		//   width: 1000,
-		//   height: 25,
-		//   fill: '#c0c0c0', 
-		//   originX: 'left', 
-		//   originY: 'top',
-		//   centeredRotation: true,
-		//   selectable: false
-		// }));
-
-		// var pelBotBorderObj = upperLayCanvas.add(new fabric.Rect({
-		//   left: 0, 
-		//   top: 525, 
-		//   width: 1000,
-		//   height: 25,
-		//   fill: '#c0c0c0', 
-		//   originX: 'left', 
-		//   originY: 'top',
-		//   centeredRotation: true,
-		//   selectable: false
-		// }));
-
-		// var pelLeftBorderObj = upperLayCanvas.add(new fabric.Rect({
-		//   left: 0, 
-		//   top: 0, 
-		//   width: 25,
-		//   height: 550,
-		//   fill: '#c0c0c0', 
-		//   originX: 'left', 
-		//   originY: 'top',
-		//   centeredRotation: true,
-		//   selectable: false
-		// }));
-
-		// var pelRightBorderObj = upperLayCanvas.add(new fabric.Rect({
-		//   left: 975, 
-		//   top: 0, 
-		//   width: 25,
-		//   height: 550,
-		//   fill: '#c0c0c0', 
-		//   originX: 'left', 
-		//   originY: 'top',
-		//   centeredRotation: true,
-		//   selectable: false
-		// }));
-
-		//Event to snap shapes to the grid
-		// upperLayCanvas.on('object:moving', function(options) { 
-		//   options.target.set({
-		//     left: Math.round(options.target.left / grid) * grid,
-		//     top: Math.round(options.target.top / grid) * grid
-		//   });
-		// });
-	</script>
+	<footer></footer>	
 
 </body>
 </html>
